@@ -25,8 +25,9 @@ for u in updates:
 
     for iu in range(len(u_spl) - 1):
         if f"{u_spl[iu]}|{u_spl[iu+1]}" not in rules:
-            sorted_u = sorted(u_spl, key=functools.cmp_to_key(cmp))
-            s2 += int(sorted_u[len(sorted_u) // 2])
+            u_spl.sort(key=functools.cmp_to_key(cmp))
+            s2 += int(u_spl[len(u_spl) // 2])
+
             break
     else:
         s += int(u_spl[len(u_spl) // 2])
