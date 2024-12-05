@@ -4,7 +4,7 @@ with open("input.txt") as f:
     rules, updates = f.read().split("\n\n")
 
     rules = set([(r.split("|")[0], r.split("|")[1]) for r in rules.splitlines()])
-    updates = updates.splitlines()
+    updates = [u.split(",") for u in updates.splitlines()]
 
 
 s = 0
@@ -21,16 +21,14 @@ def cmp(a, b):
 
 
 for u in updates:
-    u_spl = u.split(",")
-
-    for iu in range(len(u_spl) - 1):
-        if (u_spl[iu], u_spl[iu + 1]) not in rules:
-            u_spl.sort(key=functools.cmp_to_key(cmp))
-            s2 += int(u_spl[len(u_spl) // 2])
+    for iu in range(len(u) - 1):
+        if (u[iu], u[iu + 1]) not in rules:
+            u.sort(key=functools.cmp_to_key(cmp))
+            s2 += int(u[len(u) // 2])
 
             break
     else:
-        s += int(u_spl[len(u_spl) // 2])
+        s += int(u[len(u) // 2])
 
 print(s)
 print(s2)
