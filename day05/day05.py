@@ -22,10 +22,9 @@ def cmp(a, b):
 
 for u in updates:
     u_spl = u.split(",")
-    u_pairs = list(zip(u_spl, u_spl[1:]))
 
-    for i, p in enumerate(u_pairs):
-        if "|".join(p) not in rules:
+    for iu in range(len(u_spl) - 1):
+        if f"{u_spl[iu]}|{u_spl[iu+1]}" not in rules:
             sorted_u = sorted(u_spl, key=functools.cmp_to_key(cmp))
             s2 += int(sorted_u[len(sorted_u) // 2])
             break
