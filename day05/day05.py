@@ -3,7 +3,7 @@ import functools
 with open("input.txt") as f:
     rules, updates = f.read().split("\n\n")
 
-    rules = rules.splitlines()
+    rules = set([(r.split("|")[0], r.split("|")[1]) for r in rules.splitlines()])
     updates = updates.splitlines()
 
 
@@ -12,9 +12,9 @@ s2 = 0
 
 
 def cmp(a, b):
-    if f"{a}|{b}" in rules:
+    if (a, b) in rules:
         return -1
-    elif f"{b}|{a}" in rules:
+    elif (b, a) in rules:
         return 1
     else:
         return 0
@@ -24,7 +24,7 @@ for u in updates:
     u_spl = u.split(",")
 
     for iu in range(len(u_spl) - 1):
-        if f"{u_spl[iu]}|{u_spl[iu+1]}" not in rules:
+        if (u_spl[iu], u_spl[iu + 1]) not in rules:
             u_spl.sort(key=functools.cmp_to_key(cmp))
             s2 += int(u_spl[len(u_spl) // 2])
 
