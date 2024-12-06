@@ -5,9 +5,6 @@ RIGHT = 3
 
 OBSTACLE = "#"
 
-
-obstacles = set()
-
 with open("input.txt") as f:
     grid = {}
     for ir, r in enumerate(f.readlines()):
@@ -16,8 +13,6 @@ with open("input.txt") as f:
 
             if c == "^":
                 current_position = (ir, ic)
-            if c == "#":
-                obstacles.add((ir, ic))
 
     ROWS = ir
     COLS = ic
