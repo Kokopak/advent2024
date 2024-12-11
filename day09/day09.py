@@ -60,11 +60,11 @@ for i in availables_size:
     full_map[i] = []
 
 
-while end >= 0:
+while end > 0:
     find = False
     start = 0
 
-    while len(full_map[end]) == 0 or full_map[end][0] == -1:
+    while not len(full_map[end]) or full_map[end][0] == -1:
         end -= 1
 
     availables = [avs for avs in availables_size if avs < end]
@@ -76,7 +76,7 @@ while end >= 0:
             full_map[end] = [-1] * len(full_map[end])
             availables_size[a] -= len(full_map[end])
 
-            if availables_size[a] <= 0:
+            if availables_size[a] == 0:
                 del availables_size[a]
 
             break
