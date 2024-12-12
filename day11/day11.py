@@ -14,10 +14,9 @@ s = 0
 for i in range(75):
     next_numbers = []
 
-    keys = [k for k in numbers]
     new_numbers = defaultdict(int)
 
-    for n in keys:
+    for n in numbers:
         if numbers[n] > 0:
             if int(n) == 0:
                 new_numbers["1"] += numbers[n]
