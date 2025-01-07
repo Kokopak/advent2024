@@ -1,6 +1,7 @@
 import heapq
 from collections import Counter
 
+
 with open("input.txt") as f:
     maze = {}
     start = (0, 0)
@@ -57,38 +58,39 @@ def dijkstra(maze, start, dist={}):
     return dist, prev
 
 
-def get_shortcuts(maze):
-    shortcuts = set()
-
-    for coord in maze:
-        if maze[coord] == "#":
-            v1 = (coord[0] + 1, coord[1])
-            v2 = (coord[0] - 1, coord[1])
-
-            if v1 in maze and v2 in maze and maze[v1] != "#" and maze[v2] != "#":
-                shortcuts.add((v1, v2))
-
-            v1 = (coord[0], coord[1] + 1)
-            v2 = (coord[0], coord[1] - 1)
-
-            if v1 in maze and v2 in maze and maze[v1] != "#" and maze[v2] != "#":
-                shortcuts.add((v1, v2))
-
-    return shortcuts
+def manhattan(coord1, coord2):
+    return abs(coord2[0] - coord1[0]) + abs(coord2[1] - coord1[1])
 
 
 d, prev = dijkstra(maze, start)
 comp = d[target]
-c = Counter()
 
 
-shortcuts = get_shortcuts(maze)
+def get_n_cheats(maze, cheat_length, threshold):
+    c = Counter()
 
-for s in shortcuts:
-    v1, v2 = s
+    seen = set()
 
-    if v1 in d and v2 in d:
-        if abs(d[v1] - d[v2]) - 2 >= 100:
-            c[abs(d[v1] - d[v2]) - 2] += 1
+    for coord in maze:
+        if coord in d:
+            for dr in range(-cheat_length, cheat_length + 1):
+                for dc in range(-cheat_length, cheat_length + 1):
+                    coord2 = (coord[0] + dr, coord[1] + dc)
+                    if coord2 in d:
+                        length = manhattan(coord, coord2)
 
-print(c.total())
+                        if (coord, coord2, length) not in seen:
+                            if (coord2, coord, length) not in seen:
+                                if length <= cheat_length:
+                                    save_steps = abs(d[coord] - d[coord2]) - length
+
+                                    if save_steps >= threshold:
+                                        c[save_steps] += 1
+
+                                seen.add((coord, coord2, length))
+
+    return c.total()
+
+
+print(get_n_cheats(maze, 2, 100))
+print(get_n_cheats(maze, 20, 100))
