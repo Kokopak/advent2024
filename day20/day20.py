@@ -1,6 +1,7 @@
 import heapq
 from collections import Counter
-
+from functools import partial
+from multiprocessing import Pool
 
 with open("input.txt") as f:
     maze = {}
@@ -66,31 +67,25 @@ d, prev = dijkstra(maze, start)
 comp = d[target]
 
 
-def get_n_cheats(maze, cheat_length, threshold):
+def process_coord(coord, cheat_length, threshold):
     c = Counter()
 
-    seen = set()
+    for dr in range(-cheat_length, cheat_length + 1):
+        for dc in range(-cheat_length, cheat_length + 1):
+            coord2 = (coord[0] + dr, coord[1] + dc)
 
-    for coord in maze:
-        if coord in d:
-            for dr in range(-cheat_length, cheat_length + 1):
-                for dc in range(-cheat_length, cheat_length + 1):
-                    coord2 = (coord[0] + dr, coord[1] + dc)
-                    if coord2 in d:
-                        length = manhattan(coord, coord2)
+            if coord2 in d:
+                length = manhattan(coord, coord2)
 
-                        if (coord, coord2, length) not in seen:
-                            if (coord2, coord, length) not in seen:
-                                if length <= cheat_length:
-                                    save_steps = abs(d[coord] - d[coord2]) - length
+                if length <= cheat_length:
+                    save_steps = abs(d[coord] - d[coord2]) - length
 
-                                    if save_steps >= threshold:
-                                        c[save_steps] += 1
-
-                                seen.add((coord, coord2, length))
+                    if save_steps >= threshold:
+                        c[save_steps] += 1
 
     return c.total()
 
 
-print(get_n_cheats(maze, 2, 100))
-print(get_n_cheats(maze, 20, 100))
+with Pool() as p:
+    print(sum(p.map(partial(process_coord, cheat_length=2, threshold=100), d)) // 2)
+    print(sum(p.map(partial(process_coord, cheat_length=20, threshold=100), d)) // 2)
